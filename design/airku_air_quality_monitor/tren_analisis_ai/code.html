@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AirKu - Tren Kualitas Udara</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-error": "#690005",
+                    "on-primary": "#00391d",
+                    "on-secondary-container": "#e6ecff",
+                    "tertiary-fixed": "#ffddb8",
+                    "surface-container": "#201f1f",
+                    "on-background": "#e5e2e1",
+                    "on-tertiary-fixed": "#2a1700",
+                    "primary": "#53e894",
+                    "surface-tint": "#49e08d",
+                    "primary-container": "#2ccb7b",
+                    "surface-container-lowest": "#0e0e0e",
+                    "secondary-fixed": "#d8e2ff",
+                    "on-error-container": "#ffdad6",
+                    "tertiary": "#ffc379",
+                    "surface-variant": "#353534",
+                    "background": "#131313",
+                    "inverse-on-surface": "#313030",
+                    "on-secondary": "#002e6a",
+                    "surface-container-high": "#2a2a2a",
+                    "surface-dim": "#131313",
+                    "secondary-fixed-dim": "#adc6ff",
+                    "on-primary-fixed-variant": "#00522d",
+                    "tertiary-container": "#f79f0e",
+                    "error-container": "#93000a",
+                    "error": "#ffb4ab",
+                    "on-tertiary": "#472a00",
+                    "tertiary-fixed-dim": "#ffb95f",
+                    "surface": "#131313",
+                    "on-tertiary-container": "#623c00",
+                    "on-surface-variant": "#bbcabc",
+                    "primary-fixed": "#6afda7",
+                    "inverse-primary": "#006d3d",
+                    "on-tertiary-fixed-variant": "#653e00",
+                    "outline-variant": "#3c4a3f",
+                    "surface-container-highest": "#353534",
+                    "secondary": "#adc6ff",
+                    "inverse-surface": "#e5e2e1",
+                    "primary-fixed-dim": "#49e08d",
+                    "on-surface": "#e5e2e1",
+                    "outline": "#869488",
+                    "surface-container-low": "#1c1b1b",
+                    "on-secondary-fixed": "#001a42",
+                    "on-secondary-fixed-variant": "#004395",
+                    "surface-bright": "#393939",
+                    "secondary-container": "#0566d9",
+                    "on-primary-fixed": "#00210f",
+                    "on-primary-container": "#00502b"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-gap": "16px",
+                    "base": "8px",
+                    "border-width": "1px",
+                    "grid-gutter": "12px",
+                    "container-padding": "20px"
+            },
+            "fontFamily": {
+                    "label-md": ["Plus Jakarta Sans"],
+                    "label-sm": ["Plus Jakarta Sans"],
+                    "body-lg": ["Plus Jakarta Sans"],
+                    "display-aqi": ["Plus Jakarta Sans"],
+                    "headline-lg-mobile": ["Plus Jakarta Sans"],
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "body-md": ["Plus Jakarta Sans"],
+                    "headline-lg": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "display-aqi": ["72px", {"lineHeight": "80px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #131313;
+            color: #e5e2e1;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .glass-card {
+            background: rgba(30, 30, 30, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .chart-container {
+            position: relative;
+            height: 180px;
+            width: 100%;
+            overflow: hidden;
+        }
+        .chart-line {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: dash 3s ease-in-out forwards;
+        }
+        @keyframes dash {
+            to { stroke-dashoffset: 0; }
+        }
+        .progress-glow {
+            box-shadow: 0 0 12px rgba(83, 232, 148, 0.3);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen">
+<!-- Top App Bar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-container-padding h-16 bg-background/80 dark:bg-background/80 backdrop-blur-xl border-b border-white/10">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-headline-md" style="font-variation-settings: 'FILL' 1;">cloud</span>
+<h1 class="text-headline-md font-headline-md font-extrabold text-primary tracking-tight">Airku</h1>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container hover:opacity-80 transition-all duration-200 active:scale-95">
+<span class="material-symbols-outlined text-on-surface-variant">sensors</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 mt-16 mb-24 px-container-padding py-6 space-y-stack-gap max-w-2xl mx-auto w-full">
+<!-- Header Page Title -->
+<div class="flex flex-col gap-1">
+<h2 class="text-headline-lg-mobile font-headline-lg-mobile text-on-background">Tren Kualitas Udara</h2>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Analisis data real-time sensor IoT Anda</p>
+</div>
+<!-- Time Range Selector -->
+<div class="flex bg-surface-container-low p-1 rounded-xl">
+<button class="flex-1 py-2 text-label-md font-label-md rounded-lg bg-primary text-on-primary shadow-sm transition-all">Hari ini</button>
+<button class="flex-1 py-2 text-label-md font-label-md text-on-surface-variant hover:text-on-surface transition-colors">7 hari</button>
+<button class="flex-1 py-2 text-label-md font-label-md text-on-surface-variant hover:text-on-surface transition-colors">30 hari</button>
+</div>
+<!-- Main Chart Card -->
+<div class="glass-card rounded-2xl p-5 overflow-hidden">
+<div class="flex justify-between items-center mb-6">
+<span class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Fluktuasi AQI 24 Jam Terakhir</span>
+<span class="text-primary text-label-sm font-label-sm flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span> Baik
+                </span>
+</div>
+<div class="chart-container">
+<svg class="w-full h-full" viewbox="0 0 400 150">
+<!-- Grid Lines -->
+<line stroke="rgba(255,255,255,0.05)" stroke-width="1" x1="0" x2="400" y1="120" y2="120"></line>
+<line stroke="rgba(255,255,255,0.05)" stroke-width="1" x1="0" x2="400" y1="80" y2="80"></line>
+<line stroke="rgba(255,255,255,0.05)" stroke-width="1" x1="0" x2="400" y1="40" y2="40"></line>
+<!-- Area Gradient -->
+<defs>
+<lineargradient id="areaGradient" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="rgba(83, 232, 148, 0.2)"></stop>
+<stop offset="100%" stop-color="rgba(83, 232, 148, 0)"></stop>
+</lineargradient>
+</defs>
+<path d="M0,150 L0,80 Q50,60 100,90 T200,50 T300,70 T400,30 L400,150 Z" fill="url(#areaGradient)"></path>
+<!-- Line -->
+<path class="chart-line" d="M0,80 Q50,60 100,90 T200,50 T300,70 T400,30" fill="none" stroke="#53e894" stroke-linecap="round" stroke-width="3"></path>
+</svg>
+</div>
+<div class="flex justify-between text-[10px] text-outline font-label-sm mt-2">
+<span>00:00</span>
+<span>06:00</span>
+<span>12:00</span>
+<span>18:00</span>
+<span>Sekarang</span>
+</div>
+</div>
+<!-- Breakdown Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-grid-gutter">
+<!-- Pollutant Breakdown -->
+<div class="glass-card rounded-2xl p-5 space-y-4">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'wght' 300;">analytics</span>
+<h3 class="text-label-md font-label-md text-on-background">Breakdown Polutan</h3>
+</div>
+<div class="space-y-4">
+<!-- PM2.5 -->
+<div class="space-y-1">
+<div class="flex justify-between text-label-sm font-label-sm">
+<span class="text-on-surface-variant">PM2.5</span>
+<span class="text-on-surface">12 <span class="text-[10px] text-outline">µg/m³</span></span>
+</div>
+<div class="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary progress-glow rounded-full" style="width: 24%"></div>
+</div>
+</div>
+<!-- PM10 -->
+<div class="space-y-1">
+<div class="flex justify-between text-label-sm font-label-sm">
+<span class="text-on-surface-variant">PM10</span>
+<span class="text-on-surface">28 <span class="text-[10px] text-outline">µg/m³</span></span>
+</div>
+<div class="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary progress-glow rounded-full" style="width: 38%"></div>
+</div>
+</div>
+<!-- CO2 -->
+<div class="space-y-1">
+<div class="flex justify-between text-label-sm font-label-sm">
+<span class="text-on-surface-variant">CO₂</span>
+<span class="text-on-surface">412 <span class="text-[10px] text-outline">ppm</span></span>
+</div>
+<div class="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-tertiary-container rounded-full" style="width: 65%"></div>
+</div>
+</div>
+<!-- VOC -->
+<div class="space-y-1">
+<div class="flex justify-between text-label-sm font-label-sm">
+<span class="text-on-surface-variant">VOC</span>
+<span class="text-on-surface">0.3 <span class="text-[10px] text-outline">mg/m³</span></span>
+</div>
+<div class="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary progress-glow rounded-full" style="width: 15%"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- AI Insight Card (Warning Color) -->
+<div class="bg-tertiary/10 border border-tertiary/20 rounded-2xl p-5 relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 opacity-10 group-hover:scale-110 transition-transform duration-500">
+<span class="material-symbols-outlined text-[80px]">warning</span>
+</div>
+<div class="flex items-start gap-3 relative z-10">
+<div class="bg-tertiary/20 p-2 rounded-xl">
+<span class="material-symbols-outlined text-tertiary">priority_high</span>
+</div>
+<div class="flex flex-col gap-2">
+<h3 class="text-label-md font-bold text-tertiary">Puncak polusi terdeteksi</h3>
+<p class="text-label-sm font-label-sm text-on-surface leading-relaxed">
+                            Puncak polusi mencapai 78 pada pukul <span class="font-bold">07.30</span> — kemungkinan dari aktivitas memasak atau kendaraan di sekitar.
+                        </p>
+</div>
+</div>
+</div>
+</div>
+<!-- Large AI Analysis Card -->
+<div class="bg-primary/5 border border-primary/20 rounded-2xl p-6 relative overflow-hidden group">
+
+<div class="flex flex-col gap-4 relative z-10">
+<div class="flex items-center gap-3">
+<div class="bg-primary/20 p-2.5 rounded-xl">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">psychology</span>
+</div>
+<h3 class="text-headline-md font-headline-md text-primary">Analisis AI AirKu</h3>
+</div>
+<p class="text-body-md font-body-md text-on-background leading-relaxed">
+                    Data sensor menunjukkan bahwa konsentrasi <span class="text-primary font-bold">CO₂ cenderung naik</span> setiap sore hari. Untuk menjaga udara tetap segar, kami merekomendasikan Anda untuk <span class="underline decoration-primary/40 underline-offset-4">membuka jendela pada pukul 16.00 – 17.00</span> guna memperbaiki sirkulasi udara alami.
+                </p>
+<div class="flex gap-4 pt-2">
+<div class="flex-1 bg-surface-container/60 p-3 rounded-xl border border-white/5">
+<span class="text-[10px] text-outline font-label-sm block mb-1 uppercase tracking-tighter">Prediksi Besok</span>
+<span class="text-label-md font-bold text-primary">Kualitas Baik</span>
+</div>
+<div class="flex-1 bg-surface-container/60 p-3 rounded-xl border border-white/5">
+<span class="text-[10px] text-outline font-label-sm block mb-1 uppercase tracking-tighter">Saran Filter</span>
+<span class="text-label-md font-bold text-on-surface">Masih Optimal</span>
+</div>
+</div>
+</div>
+</div>
+<!-- History Preview -->
+<div class="glass-card rounded-2xl p-5">
+<div class="flex justify-between items-center mb-4">
+<h3 class="text-label-md font-label-md text-on-background">Histori Terakhir</h3>
+<button class="text-primary text-label-sm font-label-sm">Lihat Semua</button>
+</div>
+<div class="space-y-4">
+<div class="flex items-center justify-between p-3 bg-surface-container-low rounded-xl">
+<div class="flex items-center gap-3">
+<div class="w-2 h-10 bg-primary rounded-full"></div>
+<div>
+<p class="text-label-md font-bold text-on-surface">AQI 42 — Baik</p>
+<p class="text-[11px] text-outline">Hari ini • 14:30</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</div>
+<div class="flex items-center justify-between p-3 bg-surface-container-low rounded-xl">
+<div class="flex items-center gap-3">
+<div class="w-2 h-10 bg-tertiary rounded-full"></div>
+<div>
+<p class="text-label-md font-bold text-on-surface">AQI 78 — Sedang</p>
+<p class="text-[11px] text-outline">Hari ini • 07:30</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 pb-safe bg-surface-container/90 dark:bg-surface-container/90 backdrop-blur-xl rounded-t-xl border-t border-white/10 shadow-[0_-4px_20px_rgba(0,0,0,0.4)]">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary-fixed transition-colors" href="#">
+<span class="material-symbols-outlined mb-1">dashboard</span>
+<span class="text-label-sm font-label-sm">Dashboard</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary font-bold active:scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">insights</span>
+<span class="text-label-sm font-label-sm">Trends</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary-fixed transition-colors" href="#">
+<span class="material-symbols-outlined mb-1">history</span>
+<span class="text-label-sm font-label-sm">History</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary-fixed transition-colors" href="#">
+<span class="material-symbols-outlined mb-1">settings</span>
+<span class="text-label-sm font-label-sm">Settings</span>
+</a>
+</nav>
+<script>
+        // Simple scale interaction for cards
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('touchstart', () => {
+                card.style.transform = 'scale(0.98)';
+                card.style.transition = 'transform 0.2s cubic-bezier(0.4, 0, 0.2, 1)';
+            });
+            card.addEventListener('touchend', () => {
+                card.style.transform = 'scale(1)';
+            });
+        });
+    </script>
+</body></html>

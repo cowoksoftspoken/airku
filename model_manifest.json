@@ -1,0 +1,63 @@
+{
+  "version": "1.0.0",
+  "models": {
+    "classifier": {
+      "file": "model_1_classifier.tflite",
+      "input_shape": [
+        1,
+        8
+      ],
+      "output_shape": [
+        1,
+        4
+      ]
+    },
+    "anomaly": {
+      "file": "model_2_anomaly.tflite",
+      "input_shape": [
+        1,
+        8
+      ],
+      "output_shape": [
+        1,
+        8
+      ]
+    },
+    "predictor": {
+      "file": "model_3_predictor.tflite",
+      "input_shape": [
+        1,
+        12,
+        8
+      ],
+      "output_shape": [
+        1,
+        1
+      ]
+    },
+    "recommender": {
+      "file": "model_4_recommender.tflite",
+      "input_shape": [
+        1,
+        4
+      ],
+      "output_shape": [
+        1,
+        8
+      ]
+    }
+  },
+  "anomaly_threshold": 0.08760671317577362,
+  "aqi_classes": [
+    "Baik",
+    "Sedang",
+    "Tidak Sehat",
+    "Berbahaya"
+  ],
+  "aqi_colors": [
+    "#16A34A",
+    "#D97706",
+    "#DC2626",
+    "#7C3AED"
+  ]
+}

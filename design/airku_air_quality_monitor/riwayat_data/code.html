@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>AirKu - Riwayat Kualitas Udara</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "on-error": "#690005",
+                "on-primary": "#00391d",
+                "on-secondary-container": "#e6ecff",
+                "tertiary-fixed": "#ffddb8",
+                "surface-container": "#201f1f",
+                "on-background": "#e5e2e1",
+                "on-tertiary-fixed": "#2a1700",
+                "primary": "#53e894",
+                "surface-tint": "#49e08d",
+                "primary-container": "#2ccb7b",
+                "surface-container-lowest": "#0e0e0e",
+                "secondary-fixed": "#d8e2ff",
+                "on-error-container": "#ffdad6",
+                "tertiary": "#ffc379",
+                "surface-variant": "#353534",
+                "background": "#131313",
+                "inverse-on-surface": "#313030",
+                "on-secondary": "#002e6a",
+                "surface-container-high": "#2a2a2a",
+                "surface-dim": "#131313",
+                "secondary-fixed-dim": "#adc6ff",
+                "on-primary-fixed-variant": "#00522d",
+                "tertiary-container": "#f79f0e",
+                "error-container": "#93000a",
+                "error": "#ffb4ab",
+                "on-tertiary": "#472a00",
+                "tertiary-fixed-dim": "#ffb95f",
+                "surface": "#131313",
+                "on-tertiary-container": "#623c00",
+                "on-surface-variant": "#bbcabc",
+                "primary-fixed": "#6afda7",
+                "inverse-primary": "#006d3d",
+                "on-tertiary-fixed-variant": "#653e00",
+                "outline-variant": "#3c4a3f",
+                "surface-container-highest": "#353534",
+                "secondary": "#adc6ff",
+                "inverse-surface": "#e5e2e1",
+                "primary-fixed-dim": "#49e08d",
+                "on-surface": "#e5e2e1",
+                "outline": "#869488",
+                "surface-container-low": "#1c1b1b",
+                "on-secondary-fixed": "#001a42",
+                "on-secondary-fixed-variant": "#004395",
+                "surface-bright": "#393939",
+                "secondary-container": "#0566d9",
+                "on-primary-fixed": "#00210f",
+                "on-primary-container": "#00502b"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+            },
+            "spacing": {
+                "stack-gap": "16px",
+                "base": "8px",
+                "border-width": "1px",
+                "grid-gutter": "12px",
+                "container-padding": "20px"
+            },
+            "fontFamily": {
+                "label-md": ["Plus Jakarta Sans"],
+                "label-sm": ["Plus Jakarta Sans"],
+                "body-lg": ["Plus Jakarta Sans"],
+                "display-aqi": ["Plus Jakarta Sans"],
+                "headline-lg-mobile": ["Plus Jakarta Sans"],
+                "headline-md": ["Plus Jakarta Sans"],
+                "body-md": ["Plus Jakarta Sans"],
+                "headline-lg": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                "display-aqi": ["72px", {"lineHeight": "80px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        body {
+            background-color: #131313;
+            color: #e5e2e1;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .glass-card {
+            background: rgba(30, 30, 30, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .history-item-hover:active {
+            transform: scale(0.98);
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="min-h-screen pb-24">
+<!-- Top App Bar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-container-padding h-16 bg-background/80 dark:bg-background/80 backdrop-blur-xl border-b border-white/10">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">cloud</span>
+<h1 class="text-headline-md font-headline-md font-bold text-primary">Riwayat</h1>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-highest/50 text-on-surface-variant hover:opacity-80 active:scale-95 duration-200">
+<span class="material-symbols-outlined">sensors</span>
+</button>
+</header>
+<main class="mt-20 px-container-padding">
+<!-- Sticky Filter Header -->
+<div class="sticky top-16 z-40 bg-background/95 backdrop-blur-md py-4 -mx-container-padding px-container-padding mb-4">
+<div class="flex gap-3 overflow-x-auto hide-scrollbar pb-1">
+<button class="px-5 py-2 rounded-full bg-primary text-on-primary font-label-md text-label-md whitespace-nowrap active:scale-95 transition-transform">
+                    Semua
+                </button>
+<button class="px-5 py-2 rounded-full bg-surface-container-high text-on-surface-variant border border-white/5 font-label-md text-label-md whitespace-nowrap hover:bg-surface-variant active:scale-95 transition-transform">
+                    Baik
+                </button>
+<button class="px-5 py-2 rounded-full bg-surface-container-high text-on-surface-variant border border-white/5 font-label-md text-label-md whitespace-nowrap hover:bg-surface-variant active:scale-95 transition-transform">
+                    Sedang
+                </button>
+<button class="px-5 py-2 rounded-full bg-surface-container-high text-on-surface-variant border border-white/5 font-label-md text-label-md whitespace-nowrap hover:bg-surface-variant active:scale-95 transition-transform">
+                    Buruk
+                </button>
+</div>
+</div>
+<!-- History Content -->
+<div class="space-y-stack-gap">
+<!-- Summary Card -->
+<div class="glass-card rounded-xl p-5 border-l-4 border-l-primary relative overflow-hidden">
+<div class="absolute -right-10 -top-10 w-32 h-32 bg-primary/10 rounded-full blur-3xl"></div>
+<div class="relative z-10">
+<p class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Rangkuman Minggu Ini</p>
+<h2 class="text-headline-md font-headline-md text-white">Udara Sangat Sehat</h2>
+<p class="text-body-md font-body-md text-on-surface-variant mt-1">Kualitas udara rata-rata mencapai skor 42 (Baik).</p>
+</div>
+</div>
+<!-- List Section -->
+<div class="space-y-4">
+<p class="text-label-sm font-label-sm text-outline px-1">HARI INI</p>
+<!-- History Item 1 -->
+<div class="glass-card rounded-xl p-4 flex items-center justify-between history-item-hover transition-all duration-200">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">eco</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="text-label-sm font-label-sm text-on-surface-variant">14:30</span>
+<span class="material-symbols-outlined text-[14px] text-primary">trending_down</span>
+</div>
+<div class="flex items-center gap-2">
+<h3 class="text-body-md font-body-md font-bold text-white">AQI 42 — Baik</h3>
+</div>
+</div>
+</div>
+<span class="px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-label-sm font-label-sm">Baik</span>
+</div>
+<!-- History Item 2 -->
+<div class="glass-card rounded-xl p-4 flex items-center justify-between history-item-hover transition-all duration-200">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-tertiary-container/20 flex items-center justify-center text-tertiary-container">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">warning</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="text-label-sm font-label-sm text-on-surface-variant">07:30</span>
+<span class="material-symbols-outlined text-[14px] text-tertiary-container">trending_up</span>
+</div>
+<div class="flex items-center gap-2">
+<h3 class="text-body-md font-body-md font-bold text-white">AQI 78 — Sedang</h3>
+</div>
+</div>
+</div>
+<span class="px-3 py-1 rounded-full bg-tertiary-container/10 border border-tertiary-container/20 text-tertiary-container text-label-sm font-label-sm">Sedang</span>
+</div>
+<p class="text-label-sm font-label-sm text-outline px-1 pt-2">KEMARIN</p>
+<!-- History Item 3 -->
+<div class="glass-card rounded-xl p-4 flex items-center justify-between history-item-hover transition-all duration-200">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">eco</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="text-label-sm font-label-sm text-on-surface-variant">20:15</span>
+<span class="material-symbols-outlined text-[14px] text-primary">trending_flat</span>
+</div>
+<div class="flex items-center gap-2">
+<h3 class="text-body-md font-body-md font-bold text-white">AQI 35 — Baik</h3>
+</div>
+</div>
+</div>
+<span class="px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-label-sm font-label-sm">Baik</span>
+</div>
+<!-- History Item 4 (Unhealthy) -->
+<div class="glass-card rounded-xl p-4 flex items-center justify-between history-item-hover transition-all duration-200">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-error/20 flex items-center justify-center text-error">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">masks</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="text-label-sm font-label-sm text-on-surface-variant">08:00</span>
+<span class="material-symbols-outlined text-[14px] text-error">trending_up</span>
+</div>
+<div class="flex items-center gap-2">
+<h3 class="text-body-md font-body-md font-bold text-white">AQI 112 — Buruk</h3>
+</div>
+</div>
+</div>
+<span class="px-3 py-1 rounded-full bg-error/10 border border-error/20 text-error text-label-sm font-label-sm">Buruk</span>
+</div>
+<p class="text-label-sm font-label-sm text-outline px-1 pt-2">2 HARI LALU</p>
+<!-- History Item 5 -->
+<div class="glass-card rounded-xl p-4 flex items-center justify-between history-item-hover transition-all duration-200">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">eco</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="text-label-sm font-label-sm text-on-surface-variant">13:45</span>
+<span class="material-symbols-outlined text-[14px] text-primary">trending_down</span>
+</div>
+<div class="flex items-center gap-2">
+<h3 class="text-body-md font-body-md font-bold text-white">AQI 51 — Baik</h3>
+</div>
+</div>
+</div>
+<span class="px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-label-sm font-label-sm">Baik</span>
+</div>
+</div>
+<!-- Empty State / Footer Loader -->
+<div class="py-12 flex flex-col items-center justify-center text-on-surface-variant/40">
+<span class="material-symbols-outlined text-[40px] mb-2 animate-bounce">expand_more</span>
+<p class="text-label-md font-label-md">Tarik ke atas untuk memuat lebih lama</p>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 pb-safe bg-surface-container/90 dark:bg-surface-container/90 backdrop-blur-xl border-t border-white/10 rounded-t-xl shadow-[0_-4px_20px_rgba(0,0,0,0.4)]">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary-fixed active:scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-label-sm font-label-sm mt-1">Dashboard</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary-fixed active:scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">insights</span>
+<span class="text-label-sm font-label-sm mt-1">Trends</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary font-bold active:scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">history</span>
+<span class="text-label-sm font-label-sm mt-1">History</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary-fixed active:scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-label-sm font-label-sm mt-1">Settings</span>
+</a>
+</nav>
+<script>
+        // Simple Interaction logic
+        document.querySelectorAll('button, a').forEach(el => {
+            el.addEventListener('click', (e) => {
+                // Subtle haptic-like feedback animation
+                el.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    el.style.transform = '';
+                }, 100);
+            });
+        });
+
+        // Sticky header opacity effect on scroll
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 20) {
+                header.classList.add('shadow-lg');
+            } else {
+                header.classList.remove('shadow-lg');
+            }
+        });
+    </script>
+</body></html>

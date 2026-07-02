@@ -1,0 +1,42 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Glowing circular boundary indicating telemetry tracking -->
+    <path
+        android:pathData="M54,24 A30,30 0 1,1 53.9,24 Z"
+        android:strokeColor="#38BDF8"
+        android:strokeWidth="1.5"
+        android:strokeAlpha="0.3"
+        android:fillColor="#00000000" />
+    
+    <!-- Wind breeze wave 1 -->
+    <path
+        android:pathData="M32,46 C42,34 66,34 76,46"
+        android:strokeColor="#10B981"
+        android:strokeWidth="3.5"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000" />
+        
+    <!-- Wind breeze wave 2 (Main) -->
+    <path
+        android:pathData="M26,54 C38,40 70,40 82,54"
+        android:strokeColor="#34D399"
+        android:strokeWidth="4.5"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000" />
+        
+    <!-- Wind breeze wave 3 -->
+    <path
+        android:pathData="M34,62 C42,52 66,52 74,62"
+        android:strokeColor="#0EA5E9"
+        android:strokeWidth="3.5"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000" />
+
+    <!-- Fresh air green leaf floating dynamically -->
+    <path
+        android:pathData="M51,36 C54,32 59,32 59,32 C59,32 61,37 57,41 C53,45 49,45 49,45 C49,45 47,41 51,36 Z"
+        android:fillColor="#34D399" />
+</vector>

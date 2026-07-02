@@ -1,0 +1,68 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+.venv
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Environment variables
+.env
+.env.*
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Android
+*.apk
+*.ap_
+*.aab
+*.dex
+*.class
+bin/
+gen/
+out/
+.gradle/
+build/
+local.properties
+proguard/
+*.log
+*.log.*
+captures/
+.externalNativeBuild
+.cxx
+.idea/
+*.iml
+.DS_Store
+
+# Datasets and checkpoints (Optional depending on if they want to push models, but typically ignored)
+data/
+checkpoints/
+*.tflite
+*.onnx
+
+# Node/Frontend (if any)
+node_modules/
+.npm/
+
+# Scratch & Design
+scratch/
