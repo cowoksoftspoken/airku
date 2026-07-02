@@ -151,7 +151,7 @@ AirKu strictly adheres to Responsible AI principles.
 
 ## Disclaimer
 
-**Medical and Health Disclaimer:** AirKu is an AI-driven experimental tool designed for micro-environmental monitoring. The Artificial Intelligence models (TFLite) provide recommendations based on probabilistic calculations and hardware sensor readings which are subject to drift, inaccuracies, and environmental anomalies. **AirKu is NOT a certified medical device.** The AI's predictions and recommendations can be incorrect. Users must not solely rely on this application for critical health decisions, especially for vulnerable individuals (e.g., asthma patients). Always consult official government air quality reports and seek professional medical advice.
+**Disclaimer:** AirKu is a smart IoT and AI-driven system designed to provide localized, real-time insights into micro-environmental air quality. While our TFLite models are robustly fine-tuned to deliver highly accurate and actionable recommendations, they are intended for informational and preventive purposes only. AirKu is not a certified medical device. For individuals with critical respiratory conditions (such as severe asthma), we recommend using AirKu's insights as a complementary tool alongside official environmental agency reports (e.g., BMKG) and professional medical advice.
 
 ---
 *Developed for Air Quality Monitoring and Environmental Intelligence.*
