@@ -4,8 +4,8 @@
 #include <DHT.h>
 
 // Konfigurasi Hotspot Mandiri (Access Point - Tanpa Internet/Router)
-const char* ssid = "AirKu_Sensor_Local";
-const char* password = "password123"; // Minimal 8 karakter
+const char *ssid = "AirKu_Sensor_Local";
+const char *password = "cihuy123"; // Minimal 8 karakter
 
 // Identitas Perangkat
 const String ESP_ID = "ESP32-Ruang-Tamu";
@@ -19,13 +19,15 @@ const String ROOM_NAME = "Ruang Tamu";
 DHT dht(DHTPIN, DHTTYPE);
 WebServer server(80);
 
-void handleGetReading() {
+void handleGetReading()
+{
   // 1. Membaca Sensor Suhu & Kelembaban (DHT22)
   float temperature = dht.readTemperature();
   float humidity = dht.readHumidity();
 
   // Fallback jika kabel lepas/sensor rusak agar ML tidak error (NaN)
-  if (isnan(temperature) || isnan(humidity)) {
+  if (isnan(temperature) || isnan(humidity))
+  {
     temperature = 25.0;
     humidity = 60.0;
     Serial.println("Peringatan: Gagal membaca DHT22, menggunakan nilai default.");
@@ -33,14 +35,15 @@ void handleGetReading() {
 
   // 2. Membaca Sensor Udara / Gas (MQ-135) dengan Oversampling (Best Practice untuk ESP32 ADC)
   long mq135_sum = 0;
-  for (int i = 0; i < 10; i++) {
+  for (int i = 0; i < 10; i++)
+  {
     mq135_sum += analogRead(MQ135_PIN);
     delay(10);
   }
   int mq135_raw = mq135_sum / 10;
-  
+
   // Konversi ke PPM (Telah dikalibrasi sesuai resistansi load sensor MQ-135)
-  float mq135_ppm = map(mq135_raw, 0, 4095, 10, 1000); 
+  float mq135_ppm = map(mq135_raw, 0, 4095, 10, 1000);
 
   // Kalkulasi AQI dasar berbasis sensor lokal (Sebagai fallback sebelum diolah TFLite di Edge)
   int estimated_aqi = map(mq135_raw, 0, 4095, 15, 300);
@@ -53,7 +56,7 @@ void handleGetReading() {
 
   // 3. Menyusun Data JSON Sesuai dengan Format Pipeline ML AirKu
   StaticJsonDocument<500> doc;
-  
+
   doc["room"] = ROOM_NAME;
   doc["espId"] = ESP_ID;
   doc["ip"] = WiFi.softAPIP().toString();
@@ -64,8 +67,8 @@ void handleGetReading() {
   doc["humidity"] = (int)humidity;
   doc["mq135_raw"] = mq135_raw;
   doc["mq135_ppm"] = mq135_ppm;
-  doc["aqi"] = estimated_aqi; 
-  
+  doc["aqi"] = estimated_aqi;
+
   // Field pelengkap UI
   doc["pm25"] = estimated_pm25;
   doc["pm10"] = estimated_pm10;
@@ -80,9 +83,10 @@ void handleGetReading() {
   Serial.println("Data dikirim: " + jsonResponse);
 }
 
-void setup() {
+void setup()
+{
   Serial.begin(115200);
-  
+
   // Inisialisasi Sensor
   dht.begin();
   analogReadResolution(12); // ESP32 ADC resolusi tinggi (0 - 4095)
@@ -90,32 +94,33 @@ void setup() {
   // Membuat Jaringan WiFi Mandiri (Access Point)
   Serial.print("\nMembangun Jaringan Hotspot (Tanpa Internet): ");
   Serial.println(ssid);
-  
+
   // Memulai mode AP
   WiFi.softAP(ssid, password);
-  
+
   Serial.println("Hotspot Aktif!");
   Serial.print("Sambungkan HP Anda ke WiFi ini, lalu akses IP: ");
   Serial.println(WiFi.softAPIP());
 
   // Rute API untuk diambil datanya oleh Aplikasi Android
   server.on("/api/reading", HTTP_GET, handleGetReading);
-  
+
   // Menangani masalah CORS untuk keamanan jaringan lokal
-  server.onNotFound([]() {
+  server.onNotFound([]()
+                    {
     if (server.method() == HTTP_OPTIONS) {
       server.sendHeader("Access-Control-Allow-Origin", "*");
       server.sendHeader("Access-Control-Allow-Headers", "*");
       server.send(204);
     } else {
       server.send(404, "text/plain", "Endpoint API tidak valid.");
-    }
-  });
+    } });
 
   server.begin();
   Serial.println("HTTP Server siap!");
 }
 
-void loop() {
+void loop()
+{
   server.handleClient();
 }

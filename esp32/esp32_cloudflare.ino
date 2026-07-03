@@ -4,11 +4,11 @@
 #include <DHT.h>
 
 // Konfigurasi WiFi
-const char* ssid = "NAMA_WIFI_ANDA";
-const char* password = "PASSWORD_WIFI_ANDA";
+const char *ssid = "Dirly_No_Mercy";
+const char *password = "Dirly Stecu";
 
 // Konfigurasi Cloudflare Worker API
-const String CLOUDFLARE_URL = "https://backend.dbgaming679.workers.dev/api/sensor";
+const String CLOUDFLARE_URL = "YOUR_WORKER_URL/api/sensor";
 
 // Identitas Perangkat
 const String ESP_ID = "ESP32-Kamar-Tidur";
@@ -25,8 +25,10 @@ DHT dht(DHTPIN, DHTTYPE);
 const unsigned long INTERVAL = 60000;
 unsigned long previousMillis = 0;
 
-void sendDataToCloudflare() {
-  if (WiFi.status() == WL_CONNECTED) {
+void sendDataToCloudflare()
+{
+  if (WiFi.status() == WL_CONNECTED)
+  {
     HTTPClient http;
     http.begin(CLOUDFLARE_URL);
     http.addHeader("Content-Type", "application/json");
@@ -35,7 +37,8 @@ void sendDataToCloudflare() {
     float temperature = dht.readTemperature();
     float humidity = dht.readHumidity();
 
-    if (isnan(temperature) || isnan(humidity)) {
+    if (isnan(temperature) || isnan(humidity))
+    {
       temperature = 25.0;
       humidity = 60.0;
       Serial.println("Peringatan: Gagal membaca DHT22.");
@@ -43,14 +46,15 @@ void sendDataToCloudflare() {
 
     // Membaca Sensor Udara / Gas (MQ-135) dengan Oversampling (Best Practice untuk ESP32 ADC)
     long mq135_sum = 0;
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 10; i++)
+    {
       mq135_sum += analogRead(MQ135_PIN);
       delay(10);
     }
     int mq135_raw = mq135_sum / 10;
-    
+
     // Konversi ke PPM (Telah dikalibrasi sesuai resistansi load sensor MQ-135)
-    float mq135_ppm = map(mq135_raw, 0, 4095, 10, 1000); 
+    float mq135_ppm = map(mq135_raw, 0, 4095, 10, 1000);
     // Kalkulasi AQI dasar berbasis sensor lokal (Sebagai fallback sebelum diolah TFLite di Edge)
     int estimated_aqi = map(mq135_raw, 0, 4095, 15, 300);
 
@@ -64,14 +68,14 @@ void sendDataToCloudflare() {
     StaticJsonDocument<500> doc;
     doc["room"] = ROOM_NAME;
     doc["espId"] = ESP_ID;
-    
+
     // Field wajib AI
     doc["temperature"] = temperature;
     doc["humidity"] = (int)humidity;
     doc["mq135_raw"] = mq135_raw;
     doc["mq135_ppm"] = mq135_ppm;
     doc["aqi"] = estimated_aqi;
-    
+
     // Field pelengkap UI
     doc["pm25"] = estimated_pm25;
     doc["pm10"] = estimated_pm10;
@@ -85,21 +89,27 @@ void sendDataToCloudflare() {
 
     // 3. Menembak Data via POST
     int httpResponseCode = http.POST(jsonRequest);
-    
-    if (httpResponseCode > 0) {
+
+    if (httpResponseCode > 0)
+    {
       Serial.printf("Sukses! HTTP Response: %d\n", httpResponseCode);
-    } else {
+    }
+    else
+    {
       Serial.printf("Gagal HTTP POST. Error: %s\n", http.errorToString(httpResponseCode).c_str());
     }
     http.end();
-  } else {
+  }
+  else
+  {
     Serial.println("Koneksi WiFi terputus, gagal mengirim data.");
   }
 }
 
-void setup() {
+void setup()
+{
   Serial.begin(115200);
-  
+
   // Inisialisasi Hardware
   dht.begin();
   analogReadResolution(12);
@@ -108,33 +118,37 @@ void setup() {
   Serial.print("\nMenghubungkan ke WiFi: ");
   Serial.println(ssid);
   WiFi.begin(ssid, password);
-  
-  while (WiFi.status() != WL_CONNECTED) {
+
+  while (WiFi.status() != WL_CONNECTED)
+  {
     delay(500);
     Serial.print(".");
   }
-  
+
   Serial.println("\nWiFi Terhubung!");
-  
+
   // Kirim data perdana agar tidak perlu menunggu timer 1 menit pertama
   sendDataToCloudflare();
 }
 
-void loop() {
+void loop()
+{
   // Auto-reconnect WiFi jika terputus (Bugfix: Menghindari dead-state pada IoT Production)
-  if (WiFi.status() != WL_CONNECTED) {
+  if (WiFi.status() != WL_CONNECTED)
+  {
     Serial.println("WiFi terputus! Mencoba menyambung kembali...");
     WiFi.disconnect();
     WiFi.reconnect();
     // Beri jeda 5 detik agar tidak membebani router
-    delay(5000); 
+    delay(5000);
     return;
   }
 
   unsigned long currentMillis = millis();
-  
+
   // Mengirim data secara periodik tanpa memblokir sistem (non-blocking)
-  if (currentMillis - previousMillis >= INTERVAL) {
+  if (currentMillis - previousMillis >= INTERVAL)
+  {
     previousMillis = currentMillis;
     sendDataToCloudflare();
   }
