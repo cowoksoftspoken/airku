@@ -3,9 +3,9 @@
 #include <ArduinoJson.h>
 #include <DHT.h>
 
-// Konfigurasi WiFi
-const char* ssid = "NAMA_WIFI_ANDA";
-const char* password = "PASSWORD_WIFI_ANDA";
+// Konfigurasi Hotspot Mandiri (Access Point - Tanpa Internet/Router)
+const char* ssid = "AirKu_Sensor_Local";
+const char* password = "password123"; // Minimal 8 karakter
 
 // Identitas Perangkat
 const String ESP_ID = "ESP32-Ruang-Tamu";
@@ -46,7 +46,7 @@ void handleGetReading() {
   
   doc["room"] = ROOM_NAME;
   doc["espId"] = ESP_ID;
-  doc["ip"] = WiFi.localIP().toString();
+  doc["ip"] = WiFi.softAPIP().toString();
   doc["timestamp"] = millis();
 
   // Field krusial untuk fitur AI
@@ -71,19 +71,16 @@ void setup() {
   dht.begin();
   analogReadResolution(12); // ESP32 ADC resolusi tinggi (0 - 4095)
 
-  // Koneksi WiFi
-  Serial.print("\nMenghubungkan ke WiFi: ");
+  // Membuat Jaringan WiFi Mandiri (Access Point)
+  Serial.print("\nMembangun Jaringan Hotspot (Tanpa Internet): ");
   Serial.println(ssid);
-  WiFi.begin(ssid, password);
   
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
+  // Memulai mode AP
+  WiFi.softAP(ssid, password);
   
-  Serial.println("\nWiFi Terhubung!");
-  Serial.print("IP Address ESP32: ");
-  Serial.println(WiFi.localIP());
+  Serial.println("Hotspot Aktif!");
+  Serial.print("Sambungkan HP Anda ke WiFi ini, lalu akses IP: ");
+  Serial.println(WiFi.softAPIP());
 
   // Rute API untuk diambil datanya oleh Aplikasi Android
   server.on("/api/reading", HTTP_GET, handleGetReading);
