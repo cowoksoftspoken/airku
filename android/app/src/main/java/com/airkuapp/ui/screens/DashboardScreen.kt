@@ -136,8 +136,16 @@ fun DashboardScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
+                    val context = LocalContext.current
                     IconButton(
-                        onClick = { viewModel.addNewReadingToHistory(currentRoom) },
+                        onClick = { 
+                            if (connectionState != SensorConnectionState.Connected || aqi == 0) {
+                                android.widget.Toast.makeText(context, "Gagal: Sensor belum terhubung atau data kosong!", android.widget.Toast.LENGTH_SHORT).show()
+                            } else {
+                                viewModel.addNewReadingToHistory(currentRoom)
+                                android.widget.Toast.makeText(context, "Data berhasil disimpan ke Tren Riwayat!", android.widget.Toast.LENGTH_SHORT).show()
+                            }
+                        },
                         colors = IconButtonDefaults.iconButtonColors(
                             containerColor = MaterialTheme.colorScheme.secondaryContainer
                         ),
