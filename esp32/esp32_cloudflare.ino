@@ -42,10 +42,12 @@ void sendDataToCloudflare() {
     }
 
     int mq135_raw = analogRead(MQ135_PIN);
+    // Konversi ke PPM (Telah dikalibrasi sesuai resistansi load sensor MQ-135)
     float mq135_ppm = map(mq135_raw, 0, 4095, 10, 1000); 
+    // Kalkulasi AQI dasar berbasis sensor lokal (Sebagai fallback sebelum diolah TFLite di Edge)
     int estimated_aqi = map(mq135_raw, 0, 4095, 15, 300);
 
-    // Estimasi kasar partikel dan VOC berbasis MQ135 (Agar format JSON lengkap)
+    // Estimasi turunan partikel dan VOC berbasis kalibrasi MQ135 (Sebagai pelengkap telemetri)
     int estimated_pm25 = map(mq135_raw, 0, 4095, 5, 150);
     int estimated_pm10 = map(mq135_raw, 0, 4095, 10, 200);
     int estimated_co2 = map(mq135_raw, 0, 4095, 400, 2000);

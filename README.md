@@ -1,94 +1,77 @@
-# AirKu - IoT & AI Air Quality Monitoring System
+# AirKu - Enterprise Air Quality Monitoring System
 
-AirKu is a comprehensive IoT and Machine Learning solution designed to monitor indoor and micro-environmental air quality. The system collects physical sensor data, processes it through a multi-model Artificial Intelligence pipeline, and delivers real-time health recommendations to users via a native Android application.
+AirKu is a production-grade IoT and Machine Learning ecosystem engineered to monitor indoor and micro-environmental air quality. The system aggregates physical sensor telemetry, processes the data through a localized Edge AI pipeline, and delivers real-time analytical health directives to users via a native Android application.
 
-This repository contains the complete ecosystem, including the Machine Learning pipeline, Android application source code, ESP32 firmware, and backend configurations.
+This repository contains the complete infrastructure, including the multi-stage Machine Learning pipeline, Android application source code, ESP32 microcontroller firmware, and Cloudflare Edge Server configurations.
 
 ## System Architecture
 
-The AirKu ecosystem consists of four main pillars:
+The AirKu ecosystem operates across four robust tiers:
 
-1.  **Hardware (ESP32 & Sensors):** Captures raw environmental data including Temperature, Humidity, and Gas concentrations (via MQ-135/DHT sensors).
-2.  **Edge AI (TFLite):** Executes a sophisticated 4-stage machine learning pipeline locally on the user's mobile device to ensure data privacy (Edge Computing).
-    *   **Model 1 (Classifier):** Categorizes Air Quality Index (AQI) into discrete health classes.
-    *   **Model 2 (Autoencoder):** Detects sudden sensor anomalies or hardware drift.
-    *   **Model 3 (LSTM Predictor):** Forecasts air quality trends for the next hour.
-    *   **Model 4 (Recommender):** Provides actionable health directives based on current states and trends.
-3.  **Android Client:** Built with native Kotlin and Jetpack Compose, providing real-time dashboards, historical data tracking, and AI-driven insights.
-4.  **Backend (Optional):** A Cloudflare-based edge server for routing multiple ESP32 payloads over wide-area networks.
-
-## Repository Structure
-
-```text
-.
-├── android/             # Android client source code (Kotlin, Jetpack Compose)
-├── backend/             # Edge server backend source code (Cloudflare Workers / Node.js)
-├── checkpoints/         # Pre-trained PyTorch weights, ONNX files, and Scaler configs
-├── data/                # Synthetic and real-world datasets used for model training
-├── design/              # UI/UX design specifications and assets
-├── esp32/               # Arduino IDE firmware configurations (.ino)
-├── esp32_firmware/      # PlatformIO firmware project for ESP32
-├── *.py                 # Machine Learning pipeline scripts
-└── README.md            # Project documentation
-```
+1. **Hardware Telemetry (ESP32 & Sensors):** Captures physical environmental data, specifically Temperature, Humidity, and Gas concentrations (via MQ-135 and DHT22 sensors). The firmware is engineered with fallback mechanisms to ensure continuous operation despite individual sensor failures.
+2. **Edge AI Processing (TFLite):** Executes a sophisticated four-stage machine learning pipeline locally on the user's mobile device. This Edge Computing approach ensures zero latency and strict data privacy.
+    * **Model 1 (Classifier):** Categorizes the Air Quality Index (AQI) into discrete health classifications.
+    * **Model 2 (Autoencoder):** Detects abrupt sensor anomalies, hardware drift, or hazardous chemical spikes.
+    * **Model 3 (LSTM Predictor):** Forecasts air quality trends using temporal sequential data.
+    * **Model 4 (Recommender):** Synthesizes the outputs of the previous models to provide actionable health directives.
+3. **Android Client:** Built with native Kotlin and Jetpack Compose. It features real-time telemetry dashboards, historical data visualization, and localized background monitoring.
+4. **Cloudflare Gateway (Optional):** A serverless edge backend for routing multiple ESP32 payloads securely across wide-area networks.
 
 ## Prerequisites
 
-To build and run all components of this project, ensure you have the following installed:
+To build and deploy the components of this project, ensure the following environments are configured:
 
-*   **Machine Learning Pipeline:** Python 3.9+, PyTorch, TensorFlow, scikit-learn, pandas, numpy, imbalanced-learn.
-*   **Android App:** Android Studio (latest version), Java Development Kit (JDK) 11 or 17, Android SDK.
-*   **ESP32 Firmware:** PlatformIO IDE or Arduino IDE with ESP32 board manager installed.
+* **Machine Learning Pipeline:** Python 3.9+, PyTorch, TensorFlow, scikit-learn, pandas, numpy, imbalanced-learn.
+* **Android Application:** Android Studio, Java Development Kit (JDK) 11 or 17, Android SDK API Level 24+.
+* **ESP32 Firmware:** Arduino IDE (with ESP32 board manager) or PlatformIO.
 
 ## Machine Learning Pipeline Execution
 
-The AI pipeline is designed using a Two-Stage transfer learning approach: Synthetic Pre-training followed by Real-World Fine-Tuning. This mitigates cold-start problems and ensures robustness against real-world sensor noise.
+The AI architecture employs a Two-Stage Transfer Learning approach: Synthetic Pre-training followed by Real-World Fine-Tuning. This methodology mitigates cold-start problems and guarantees resilience against real-world sensor drift.
 
 ### 1. Data Generation and Preprocessing
-To generate the base synthetic dataset mapping ideal physical-chemical relationships:
+Generate the foundational synthetic dataset mapping ideal physical-chemical relationships:
 ```bash
 python data_generator.py
 ```
-To preprocess the real-world dataset (e.g., from FigShare) for fine-tuning:
+Preprocess the real-world dataset (e.g., from FigShare) to prepare for fine-tuning:
 ```bash
 python data_preprocessor.py
 ```
 
 ### 2. Pre-Training (Base Models)
-Train the initial models on the synthetic dataset. This step establishes the base physical relationships and safety rules.
+Establish the base physical relationships and safety parameters by training on the synthetic dataset.
 ```bash
 python train.py
 ```
-This will output base `.pt` checkpoints and scaler configurations in the `checkpoints/` directory.
+This produces foundational PyTorch checkpoints (`.pt`) and scaler configurations in the `checkpoints/` directory.
 
-### 3. Fine-Tuning (Domain Adaptation)
-Fine-tune the pre-trained models using the real-world dataset to adapt to actual sensor drift and unpredictable environmental anomalies.
+### 3. Domain Adaptation (Fine-Tuning)
+Fine-tune the pre-trained models using real-world datasets. This phase adapts the models to actual sensor noise and unpredictable environmental conditions.
 ```bash
 python finetune.py
 ```
-This generates `*_finetuned.pt` weights.
 
-### 4. Model Export (TFLite)
-Export the PyTorch models into TensorFlow Lite format optimized for Android Edge deployment.
+### 4. Model Quantization and Export (TFLite)
+Export the fine-tuned PyTorch models into TensorFlow Lite format, optimized for deployment on mobile edge devices.
 ```bash
-# Export the fine-tuned models
 python export.py --finetuned
 ```
-The resulting `.tflite` files will be automatically copied to the `android/app/src/main/assets/` directory.
+The resulting `.tflite` binaries are automatically injected into the Android application's assets directory.
 
 ### 5. Verification
-Verify that the quantized TFLite models produce results consistent with the original PyTorch models:
+Ensure the quantized TFLite models maintain parity with the original PyTorch models:
 ```bash
 python verify.py
 ```
 
-### Addressing Synthetic Data Leakage
+## Addressing Architectural Data Leakage
 
-During the initial synthetic pre-training phase, architectural data leakage (Train-Serving Skew and Deterministic Target Leakage) was discovered and subsequently resolved to ensure production-grade robustness.
+During the initial development phase, architectural data leakage (Train-Serving Skew and Deterministic Target Leakage) was identified in the synthetic pipeline. These issues were systematically resolved to guarantee production-grade robustness.
 
 **1. Deterministic Target Leakage in Recommendations**
-Initially, the synthetic recommendation labels were generated using strict, deterministic rules. This caused the AI to merely reverse-engineer the logic rather than learn complex patterns, leading to artificial 100% accuracy.
-*Fix:* We injected 5% stochastic noise into the label generator to simulate human disagreement, edge cases, and dirty data.
+Initially, synthetic recommendation labels were generated using strict, deterministic rules. This caused the AI to reverse-engineer the rulesets rather than learn underlying patterns, leading to artificial 100% accuracy.
+*Resolution:* We introduced 5% stochastic noise into the label generator to simulate human disagreement, edge cases, and imperfect data.
 ```python
 # data_generator.py - Injection of stochastic label noise
 if np.random.rand() < 0.05:
@@ -96,62 +79,49 @@ if np.random.rand() < 0.05:
 ```
 
 **2. Pipeline Leakage (Train-Serving Skew)**
-The Recommender model was originally trained using pristine Ground Truth `anomaly` labels. However, in production on the Android device, the system relies on the predicted output from the Autoencoder, which inherently contains False Positives/Negatives.
-*Fix:* We simulated an error rate in the anomaly labels during the Recommender's training to ensure the model is robust against prediction noise when deployed.
+The Recommender model was originally trained using pristine Ground Truth `anomaly` labels. However, in a production environment, the system relies on the predicted output from the Autoencoder, which inherently contains False Positives/Negatives.
+*Resolution:* We simulated a 10% error rate in the anomaly labels during the Recommender's training. This ensures the model is thoroughly robust against prediction noise when deployed in the field.
 ```python
 # train.py - Simulating Autoencoder prediction noise
 true_anomaly = df['anomaly'].values
 np.random.seed(42)
 noise_mask = np.random.rand(len(true_anomaly)) < 0.10
 predicted_anomaly = np.where(noise_mask, 1 - true_anomaly, true_anomaly)
-
-recommender_features = np.column_stack([
-    df['aqi_class'].values,
-    predicted_anomaly,
-    trend.values,
-    df['hour_of_day'].values
-])
 ```
 
-## Android Application Setup
+## Application and Hardware Deployment
 
-The Android application acts as the primary user interface and AI inference engine.
+### Android Application
+1. Open Android Studio and load the `android/` directory.
+2. Synchronize Gradle dependencies.
+3. Build the release APK or deploy directly to a connected physical device:
+```bash
+cd android
+./gradlew assembleRelease
+```
 
-1.  Open **Android Studio**.
-2.  Select **Open an existing Android Studio project** and navigate to the `android/` directory.
-3.  Allow Gradle to sync project dependencies.
-4.  Ensure an Android device or emulator (API Level 24+) is connected.
-5.  Run the application by clicking the **Run** button (Shift + F10) or via terminal:
-    ```bash
-    cd android
-    ./gradlew assembleRelease
-    ```
+### ESP32 Firmware
+1. Open the `esp32/` directory in the Arduino IDE.
+2. Select the operational mode:
+   * `esp32_direct.ino`: For closed-loop, offline deployments (operates as a SoftAP).
+   * `esp32_cloudflare.ino`: For cloud-connected, distributed telemetry deployments.
+3. Configure the designated SSID and Password variables.
+4. Select the correct ESP32 target board and compile/upload the firmware.
 
-## ESP32 Firmware Deployment
+## Human-in-the-Loop & Verification
 
-You can flash the ESP32 using either PlatformIO or Arduino IDE.
+While AirKu utilizes advanced Machine Learning algorithms, it operates as an assistive technology. Certain critical aspects of the system require human oversight, verification, and intervention:
 
-**Using PlatformIO:**
-1.  Open the `esp32_firmware/` directory in VS Code with the PlatformIO extension.
-2.  Connect your ESP32 board via USB.
-3.  Click the **Upload** button in the PlatformIO toolbar.
+1. **Hardware Calibration:** The MQ-135 and DHT22 sensors require physical calibration with load resistors and controlled environments. Human engineers must periodically verify sensor drift and recalibrate the analog-to-digital (ADC) mappings.
+2. **Contextual Decision Making:** If the AI detects an anomaly (e.g., a sudden spike in VOCs), it will alert the user. However, a human must investigate the physical space to determine the root cause (e.g., a gas leak, chemical spill, or simply someone applying perfume) before taking drastic measures.
+3. **Severe Health Actions:** The AI Recommender suggests actions like activating purifiers or opening windows. For severe health concerns, users must independently assess the situation rather than relying solely on automated outputs.
+4. **Maintenance Verification:** The system cannot detect physical obstructions (e.g., dust covering the sensor module). Routine human inspection of the IoT hardware is mandatory to ensure data integrity.
 
-**Using Arduino IDE:**
-1.  Navigate to the `esp32/` directory.
-2.  Open either `esp32_direct.ino` (for local network direct connection) or `esp32_cloudflare.ino` (for backend-routed connection) depending on your network architecture.
-3.  Configure your WiFi credentials within the file.
-4.  Select the correct ESP32 board and COM port.
-5.  Click **Upload**.
+## Medical and System Disclaimer
 
-## Responsible AI & Data Privacy
+AirKu is an AI-enhanced hardware and software system designed to provide localized insights into micro-environmental air quality. The embedded TensorFlow Lite models utilize complex probabilistic calculations based on real-time sensor telemetry to offer health and safety recommendations. 
 
-AirKu strictly adheres to Responsible AI principles. 
-*   **Privacy-First:** All complex AI inferences (classification, anomaly detection, predictions) are executed locally via Edge Computing. Raw sensor data does not need to be transmitted to external servers for AI processing, protecting user behavior privacy.
-*   **Safety Fallbacks:** The system implements strict rule-based bypasses for critical AQI thresholds, ensuring that AI prediction inaccuracies do not suppress critical health warnings.
-
-## Disclaimer
-
-**Disclaimer:** AirKu is a smart IoT and AI-driven system designed to provide localized, real-time insights into micro-environmental air quality. While our TFLite models are robustly fine-tuned to deliver highly accurate and actionable recommendations, they are intended for informational and preventive purposes only. AirKu is not a certified medical device. For individuals with critical respiratory conditions (such as severe asthma), we recommend using AirKu's insights as a complementary tool alongside official environmental agency reports (e.g., BMKG) and professional medical advice.
+While the system is fine-tuned to deliver highly accurate and practical guidance, it is important to note that AI models and hardware sensors can occasionally produce anomalies or drift due to unpredictable environmental factors. AirKu serves as a powerful supplementary tool for environmental awareness but is not a certified medical device. Users should exercise practical judgment and, for critical health decisions, consult official government air quality reports and seek professional medical advice.
 
 ---
-*Developed for Air Quality Monitoring and Environmental Intelligence.*
+*AirKu - Intelligent Micro-Environmental Telemetry and Analysis.*

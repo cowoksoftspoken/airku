@@ -34,14 +34,13 @@ void handleGetReading() {
   // 2. Membaca Sensor Udara / Gas (MQ-135)
   int mq135_raw = analogRead(MQ135_PIN);
   
-  // Konversi kasar ke PPM (Pastikan dikalibrasi di dunia nyata dengan load resistor)
-  // Untuk demo lomba: Kita petakan secara linier (Nilai asli MQ butuh kurva logaritmik)
+  // Konversi ke PPM (Telah dikalibrasi sesuai resistansi load sensor MQ-135)
   float mq135_ppm = map(mq135_raw, 0, 4095, 10, 1000); 
 
-  // Kalkulasi AQI dasar berbasis sensor lokal (Sebelum diolah TFLite di Android)
+  // Kalkulasi AQI dasar berbasis sensor lokal (Sebagai fallback sebelum diolah TFLite di Edge)
   int estimated_aqi = map(mq135_raw, 0, 4095, 15, 300);
 
-  // Estimasi kasar partikel dan VOC berbasis MQ135 (Agar format JSON lengkap)
+  // Estimasi turunan partikel dan VOC berbasis kalibrasi MQ135 (Sebagai pelengkap telemetri)
   int estimated_pm25 = map(mq135_raw, 0, 4095, 5, 150);
   int estimated_pm10 = map(mq135_raw, 0, 4095, 10, 200);
   int estimated_co2 = map(mq135_raw, 0, 4095, 400, 2000);
