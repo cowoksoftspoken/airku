@@ -95,9 +95,13 @@ void setup()
   Serial.print("\nMembangun Jaringan Hotspot (Tanpa Internet): ");
   Serial.println(ssid);
 
-  // Memulai mode AP
-  WiFi.softAP(ssid, password);
-
+  // Memulai mode AP dengan spesifikasi maksimal:
+  // Parameter: ssid, password, channel (bebas intervensi, misal 6), hidden=0, max_connection=4
+  WiFi.softAP(ssid, password, 6, 0, 4);
+  
+  // Memaksa ESP32 memancarkan sinyal WiFi dengan daya transmisi maksimum (19.5 dBm)
+  WiFi.setTxPower(WIFI_POWER_19_5dBm);
+  
   Serial.println("Hotspot Aktif!");
   Serial.print("Sambungkan HP Anda ke WiFi ini, lalu akses IP: ");
   Serial.println(WiFi.softAPIP());
