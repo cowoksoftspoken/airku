@@ -45,7 +45,13 @@ void sendDataToCloudflare() {
     float mq135_ppm = map(mq135_raw, 0, 4095, 10, 1000); 
     int estimated_aqi = map(mq135_raw, 0, 4095, 15, 300);
 
-    // 2. Membuat JSON Payload (Wajib selaras dengan ML Pipeline)
+    // Estimasi kasar partikel dan VOC berbasis MQ135 (Agar format JSON lengkap)
+    int estimated_pm25 = map(mq135_raw, 0, 4095, 5, 150);
+    int estimated_pm10 = map(mq135_raw, 0, 4095, 10, 200);
+    int estimated_co2 = map(mq135_raw, 0, 4095, 400, 2000);
+    float estimated_voc = map(mq135_raw, 0, 4095, 1, 100) / 100.0;
+
+    // 2. Membuat JSON Payload (Wajib selaras dengan ML Pipeline & Backend)
     StaticJsonDocument<500> doc;
     doc["room"] = ROOM_NAME;
     doc["espId"] = ESP_ID;
@@ -56,6 +62,12 @@ void sendDataToCloudflare() {
     doc["mq135_raw"] = mq135_raw;
     doc["mq135_ppm"] = mq135_ppm;
     doc["aqi"] = estimated_aqi;
+    
+    // Field pelengkap UI
+    doc["pm25"] = estimated_pm25;
+    doc["pm10"] = estimated_pm10;
+    doc["co2"] = estimated_co2;
+    doc["voc"] = estimated_voc;
 
     String jsonRequest;
     serializeJson(doc, jsonRequest);

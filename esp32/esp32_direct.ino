@@ -41,6 +41,12 @@ void handleGetReading() {
   // Kalkulasi AQI dasar berbasis sensor lokal (Sebelum diolah TFLite di Android)
   int estimated_aqi = map(mq135_raw, 0, 4095, 15, 300);
 
+  // Estimasi kasar partikel dan VOC berbasis MQ135 (Agar format JSON lengkap)
+  int estimated_pm25 = map(mq135_raw, 0, 4095, 5, 150);
+  int estimated_pm10 = map(mq135_raw, 0, 4095, 10, 200);
+  int estimated_co2 = map(mq135_raw, 0, 4095, 400, 2000);
+  float estimated_voc = map(mq135_raw, 0, 4095, 1, 100) / 100.0;
+
   // 3. Menyusun Data JSON Sesuai dengan Format Pipeline ML AirKu
   StaticJsonDocument<500> doc;
   
@@ -55,6 +61,12 @@ void handleGetReading() {
   doc["mq135_raw"] = mq135_raw;
   doc["mq135_ppm"] = mq135_ppm;
   doc["aqi"] = estimated_aqi; 
+  
+  // Field pelengkap UI
+  doc["pm25"] = estimated_pm25;
+  doc["pm10"] = estimated_pm10;
+  doc["co2"] = estimated_co2;
+  doc["voc"] = estimated_voc;
 
   String jsonResponse;
   serializeJson(doc, jsonResponse);

@@ -27,6 +27,8 @@ interface TelemetryPayload {
 	pm10: number;
 	co2: number;
 	voc: number;
+	mq135_raw?: number;
+	mq135_ppm?: number;
 	espId?: string;
 	ip?: string;
 }
@@ -83,6 +85,8 @@ app.get('/api/readings', async (c) => {
 					pm10: 34,
 					co2: 410,
 					voc: 0.2,
+					mq135_raw: 900,
+					mq135_ppm: 25.0,
 					espId: 'esp32_class_a',
 					ip: '192.168.1.121',
 					timestamp: Date.now(),
@@ -96,6 +100,8 @@ app.get('/api/readings', async (c) => {
 					pm10: 75,
 					co2: 1150,
 					voc: 0.62,
+					mq135_raw: 2100,
+					mq135_ppm: 145.0,
 					espId: 'esp32_meeting',
 					ip: '192.168.1.144',
 					timestamp: Date.now(),
@@ -133,6 +139,8 @@ app.post('/api/telemetry', async (c) => {
 			pm10: Math.round(Number(body.pm10 || 0)),
 			co2: Math.round(Number(body.co2 || 400)),
 			voc: Number(body.voc || 0.1),
+			mq135_raw: body.mq135_raw ? Number(body.mq135_raw) : 1000,
+			mq135_ppm: body.mq135_ppm ? Number(body.mq135_ppm) : 30.0,
 			espId: body.espId || `esp32_${body.room.trim().toLowerCase().replace(/\s+/g, '_')}`,
 			ip: body.ip || '192.168.1.100',
 			timestamp: Date.now(),
