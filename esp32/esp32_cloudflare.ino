@@ -41,7 +41,14 @@ void sendDataToCloudflare() {
       Serial.println("Peringatan: Gagal membaca DHT22.");
     }
 
-    int mq135_raw = analogRead(MQ135_PIN);
+    // Membaca Sensor Udara / Gas (MQ-135) dengan Oversampling (Best Practice untuk ESP32 ADC)
+    long mq135_sum = 0;
+    for (int i = 0; i < 10; i++) {
+      mq135_sum += analogRead(MQ135_PIN);
+      delay(10);
+    }
+    int mq135_raw = mq135_sum / 10;
+    
     // Konversi ke PPM (Telah dikalibrasi sesuai resistansi load sensor MQ-135)
     float mq135_ppm = map(mq135_raw, 0, 4095, 10, 1000); 
     // Kalkulasi AQI dasar berbasis sensor lokal (Sebagai fallback sebelum diolah TFLite di Edge)
@@ -114,6 +121,16 @@ void setup() {
 }
 
 void loop() {
+  // Auto-reconnect WiFi jika terputus (Bugfix: Menghindari dead-state pada IoT Production)
+  if (WiFi.status() != WL_CONNECTED) {
+    Serial.println("WiFi terputus! Mencoba menyambung kembali...");
+    WiFi.disconnect();
+    WiFi.reconnect();
+    // Beri jeda 5 detik agar tidak membebani router
+    delay(5000); 
+    return;
+  }
+
   unsigned long currentMillis = millis();
   
   // Mengirim data secara periodik tanpa memblokir sistem (non-blocking)

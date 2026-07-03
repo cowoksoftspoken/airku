@@ -31,8 +31,13 @@ void handleGetReading() {
     Serial.println("Peringatan: Gagal membaca DHT22, menggunakan nilai default.");
   }
 
-  // 2. Membaca Sensor Udara / Gas (MQ-135)
-  int mq135_raw = analogRead(MQ135_PIN);
+  // 2. Membaca Sensor Udara / Gas (MQ-135) dengan Oversampling (Best Practice untuk ESP32 ADC)
+  long mq135_sum = 0;
+  for (int i = 0; i < 10; i++) {
+    mq135_sum += analogRead(MQ135_PIN);
+    delay(10);
+  }
+  int mq135_raw = mq135_sum / 10;
   
   // Konversi ke PPM (Telah dikalibrasi sesuai resistansi load sensor MQ-135)
   float mq135_ppm = map(mq135_raw, 0, 4095, 10, 1000); 
