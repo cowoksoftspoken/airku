@@ -58,7 +58,7 @@ void sendDataToCloudflare() {
     
     // Field wajib AI
     doc["temperature"] = temperature;
-    doc["humidity"] = humidity;
+    doc["humidity"] = (int)humidity;
     doc["mq135_raw"] = mq135_raw;
     doc["mq135_ppm"] = mq135_ppm;
     doc["aqi"] = estimated_aqi;
